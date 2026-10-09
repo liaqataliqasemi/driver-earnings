@@ -7,7 +7,7 @@ A web app for delivery drivers to log shifts and see their **real pay per hour a
 ![App screenshot](screenshot.png)
 
 ## Why I built it
-I work as a delivery driver and wanted to know which shifts actually pay best once hours and miles are counted, not just the total payout.
+As a delivery driver and wanted to know which shifts actually pay best once hours and miles are counted, not just the total payout.
 
 ## Features
 - Add shifts with date, hours, miles, and earnings
