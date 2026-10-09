@@ -2,13 +2,9 @@ import { useState, useEffect } from "react";
 import type { Shift } from "./types";
 import Summary from "./components/Summary";
 import ShiftList from "./components/ShiftList";
+import ShiftForm from "./components/ShiftForm";
 
-const emptyForm = {
-  date: "",
-  hours: "",
-  miles: "",
-  earnings: ""
-};
+ 
 
 function App(){
 
@@ -17,32 +13,14 @@ function App(){
   const saved = localStorage.getItem("shifts");
     return saved ? JSON.parse(saved) : [];
   });
-
-  const [form, setForm] = useState(emptyForm); 
+ 
 
   useEffect(() => {
     localStorage.setItem("shifts", JSON.stringify(shifts));
   }, [shifts]);
 
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-  setForm({ ...form, [e.target.name]: e.target.value });
-}
-
-  function addShift(){
-    if (!form.hours || !form.earnings) {
-      alert("please enter hours and earnings");
-      return;
-    }
-    const newShift: Shift = {
-      id: Date.now(), 
-      date: form.date || new Date().toLocaleDateString("en-CA"),
-      hours: parseFloat(form.hours) || 0,
-      miles: parseFloat(form.miles) || 0,
-      earnings: parseFloat(form.earnings) || 0,
-    };
+  function addShift(newShift: Shift) {        // 👈 here
     setShift([...shifts, newShift]);
-    setForm(emptyForm);
   }
 
   function deleteShift(id: number) {
@@ -50,41 +28,11 @@ function App(){
   }
 
   return (
-    <div>
+    <div className="container">
       <h1>{appName}</h1>
+      <p className="subtitle">Track my shifts and see my real pay.</p>
+      <ShiftForm onAdd={addShift} />
       <Summary shifts={shifts} />
-      <input
-        type="date"
-        placeholder="Date"
-        name="date"
-        value={form.date}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        placeholder="Hours"
-        name="hours"
-        value={form.hours}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        placeholder="Miles"
-        name="miles"
-        value={form.miles}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        placeholder="Earnings"
-        name="earnings"
-        value={form.earnings}
-        onChange={handleChange}
-      />
-      <button onClick={addShift}>Add Shift</button>
-
-      <p> You Typed: {form.hours} hours</p>
-      <p>Track my shifts and see my real pay.</p>   
       <ShiftList shifts={shifts} onDelete={deleteShift} />
     </div>
   );
