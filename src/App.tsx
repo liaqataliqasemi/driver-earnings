@@ -9,6 +9,13 @@ interface Shift {
   earnings: number;
 }
 
+const emptyForm = {
+  date: "",
+  hours: "",
+  miles: "",
+  earnings: ""
+};
+
 function App(){
 
   const appName: string = "Driver Earnings Tracker";
@@ -35,22 +42,63 @@ function App(){
       earnings: 105.00
     }
   ]);
+  const [form, setForm] = useState(emptyForm); 
 
   const totalEarnings = shifts.reduce((sum, shift) => sum + shift.earnings, 0);
-  function addTestShift() {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  setForm({ ...form, [e.target.name]: e.target.value });
+}
+
+  function addShift(){
+    if (!form.hours || !form.earnings) {
+      alert("please enter hours and earnings");
+      return;
+    }
     const newShift: Shift = {
-      id: Date.now(),
-      date: "2026-10-10",
-      hours: 2,
-      miles: 25,
-      earnings: 30,
+      id: Date.now(), 
+      date: form.date || new Date().toLocaleDateString("en-CA"),
+      hours: parseFloat(form.hours) || 0,
+      miles: parseFloat(form.miles) || 0,
+      earnings: parseFloat(form.earnings) || 0,
     };
     setShift([...shifts, newShift]);
+    setForm(emptyForm);
   }
+
   return (
     <div>
       <h1>{appName}</h1>
-      <button onClick={addTestShift}>Add Test Shift</button>
+      <input
+        type="date"
+        placeholder="Date"
+        name="date"
+        value={form.date}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        placeholder="Hours"
+        name="hours"
+        value={form.hours}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        placeholder="Miles"
+        name="miles"
+        value={form.miles}
+        onChange={handleChange}
+      />
+      <input
+        type="number"
+        placeholder="Earnings"
+        name="earnings"
+        value={form.earnings}
+        onChange={handleChange}
+      />
+      <button onClick={addShift}>Add Shift</button>
+
+      <p> You Typed: {form.hours} hours</p>
       <p>Track my shifts and see my real pay.</p>
       <p><strong>Total Earnings: ${totalEarnings.toFixed(2)}</strong></p>
       <h2> My Shifts </h2>
