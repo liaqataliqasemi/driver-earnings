@@ -1,75 +1,47 @@
-# React + TypeScript + Vite
+# 🚗 Driver Earnings Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web app for delivery drivers to log shifts and see their **real pay per hour and per mile**.
 
-Currently, two official plugins are available:
+🔗 **Live demo:**  https://driver-earnings.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![App screenshot](screenshot.png)
 
-## React Compiler
+## Why I built it
+I work as a delivery driver and wanted to know which shifts actually pay best once hours and miles are counted, not just the total payout.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
+- Add shifts with date, hours, miles, and earnings
+- See total earnings, pay per hour, and pay per mile
+- Pay per hour shown for every shift
+- Delete shifts
+- Data saved in the browser (localStorage)
+- Form validation and responsive layout for mobile
 
-## Expanding the ESLint configuration
+## Built with
+- React
+- TypeScript
+- Vite
+- CSS
+- Deployed on Vercel
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## What I learned
+- Building reusable components and passing data with props
+- Managing state with `useState` and side effects with `useEffect`
+- Typing data and props with TypeScript interfaces
+- Controlled forms and validation
+- Saving data with localStorage
+- Git, GitHub, and deploying with Vercel
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+## Run it locally
+```bash
+git clone https://github.com/liaqataliqasemi/driver-earnings.git
+cd driver-earnings
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+## Future improvements
+- Charts for earnings by day and week
+- Edit existing shifts
+- Separate tips from base pay
+- Cloud database so data syncs across devices
