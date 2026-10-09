@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 
 interface Shift {
   id: number;
@@ -19,30 +18,16 @@ const emptyForm = {
 function App(){
 
   const appName: string = "Driver Earnings Tracker";
-  const [shifts, setShift] = useState<Shift[]>([
-    {
-      id: 1,
-      date: "2023-10-01",
-      hours: 8,
-      miles: 120,
-      earnings: 120.00
-    },
-    {
-      id: 2,
-      date: "2023-10-02",
-      hours: 6,
-      miles: 90,
-      earnings: 90.00
-    },
-    {
-      id: 3,
-      date: "2023-10-03",
-      hours: 7,
-      miles: 105,
-      earnings: 105.00
-    }
-  ]);
+  const [shifts, setShift] = useState<Shift[]>(() => {
+  const saved = localStorage.getItem("shifts");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [form, setForm] = useState(emptyForm); 
+
+  useEffect(() => {
+    localStorage.setItem("shifts", JSON.stringify(shifts));
+  }, [shifts]);
 
   const totalEarnings = shifts.reduce((sum, shift) => sum + shift.earnings, 0);
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
