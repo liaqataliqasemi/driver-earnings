@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Shift } from "./types";
 import Summary from "./components/Summary";
+import ShiftList from "./components/ShiftList";
 
 const emptyForm = {
   date: "",
@@ -83,16 +84,8 @@ function App(){
       <button onClick={addShift}>Add Shift</button>
 
       <p> You Typed: {form.hours} hours</p>
-      <p>Track my shifts and see my real pay.</p>  
-      <h2> My Shifts </h2>
-      <ul>
-        {shifts.map((shift) => (
-          <li key={shift.id}>
-            {shift.date}: {shift.hours} hours, {shift.miles} miles, ${shift.earnings.toFixed(2)}
-            <button onClick={() => deleteShift(shift.id)}>Delete</button>
-          </li>
-        )) }  
-      </ul> 
+      <p>Track my shifts and see my real pay.</p>   
+      <ShiftList shifts={shifts} onDelete={deleteShift} />
     </div>
   );
 }
