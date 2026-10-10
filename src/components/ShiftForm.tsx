@@ -2,7 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import type { Shift } from "../types";
 
 interface ShiftFormProps {
-  onAdd: (shift: Shift) => void;
+  onAdd: (shift: Omit<Shift, "id">) => void;
 }
 
 const emptyForm = {
@@ -28,7 +28,6 @@ function ShiftForm({ onAdd }: ShiftFormProps) {
     }
 
     onAdd({
-      id: Date.now(),
       date: form.date || new Date().toLocaleDateString("en-CA"),
       hours: parseFloat(form.hours) || 0,
       miles: parseFloat(form.miles) || 0,

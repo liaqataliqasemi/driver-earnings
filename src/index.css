@@ -126,3 +126,36 @@ h2 {
   color: #64748b;
   padding: 24px;
 }
+.shift-list strong {
+  font-size: 16px;
+  color: #1e293b;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.link {
+  background: none;
+  color: #2563eb;
+  padding: 8px 0;
+}
+
+.link:hover {
+  background: none;
+  text-decoration: underline;
+}
+
+.auth {
+  max-width: 400px;
+}
+
+.auth form {
+  grid-template-columns: 1fr;
+}
+
+.message {
+  margin: 8px 0;
+  color: #64748b;
+}
