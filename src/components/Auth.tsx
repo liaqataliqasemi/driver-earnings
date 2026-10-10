@@ -18,7 +18,11 @@ function Auth() {
       : await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setMessage(error.message);
+      setMessage(
+        isSignUp
+            ? error.message
+            : "Wrong email or password. New here? Click Sign up below."
+        );
     } else {
       setMessage(isSignUp ? "Account created!" : "Logged in!");
     }
