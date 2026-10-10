@@ -17,6 +17,7 @@ As a delivery driver and wanted to know which shifts actually pay best once hour
 - Data saved in the browser (localStorage)
 - Form validation and responsive layout for mobile
 - Edit and delete shifts
+- Charts: net earnings by day and best days to drive
 
 ## Built with
 - React
@@ -24,6 +25,7 @@ As a delivery driver and wanted to know which shifts actually pay best once hour
 - Vite
 - CSS
 - Deployed on Vercel
+- Recharts
 
 ## What I learned
 - Building reusable components and passing data with props
