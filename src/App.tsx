@@ -7,6 +7,9 @@ import Summary from "./components/Summary";
 import ShiftList from "./components/ShiftList";
 import ShiftForm from "./components/ShiftForm"; 
 import SettingsForm from "./components/SettingsForm";
+import EarningsChart from "./components/EarningsChart";
+import BestDaysChart from "./components/BestDaysChart";
+
 
 function App() {
   const appName: string = "Driver Earnings Tracker";
@@ -181,6 +184,8 @@ function App() {
         onCancel={() => setEditingShift(null)}
       />
       <Summary shifts={shifts} />
+      <EarningsChart shifts={shifts} />
+      <BestDaysChart shifts={shifts} />
       <ShiftList shifts={shifts} onDelete={deleteShift} onEdit={setEditingShift} />
     </div>
   );

@@ -16,6 +16,7 @@ As a delivery driver and wanted to know which shifts actually pay best once hour
 - Delete shifts
 - Data saved in the browser (localStorage)
 - Form validation and responsive layout for mobile
+- Edit and delete shifts
 
 ## Built with
 - React
@@ -31,6 +32,7 @@ As a delivery driver and wanted to know which shifts actually pay best once hour
 - Controlled forms and validation
 - Saving data with localStorage
 - Git, GitHub, and deploying with Vercel
+- Full CRUD operations with Supabase (insert, select, update, delete)
 
 ## Run it locally
 ```bash

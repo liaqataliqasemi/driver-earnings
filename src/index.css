@@ -201,3 +201,7 @@ h2 {
 .cancel:hover {
   background: #64748b;
 }
+
+.chart {
+  margin-bottom: 24px;
+}
