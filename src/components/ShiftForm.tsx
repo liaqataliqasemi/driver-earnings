@@ -3,6 +3,8 @@ import type { Shift } from "../types";
 
 interface ShiftFormProps {
   onAdd: (shift: Omit<Shift, "id" | "gas_cost">) => void;
+  editingShift: Shift | null;
+  onCancel: () => void;
 }
 
 const emptyForm = {
@@ -12,8 +14,17 @@ const emptyForm = {
   earnings: "",
 };
 
-function ShiftForm({ onAdd }: ShiftFormProps) {
-  const [form, setForm] = useState(emptyForm);
+function ShiftForm({ onAdd, editingShift, onCancel }: ShiftFormProps) {
+  const [form, setForm] = useState(
+    editingShift
+        ? {
+            date: editingShift.date,
+            hours: String(editingShift.hours),
+            miles: String(editingShift.miles),
+            earnings: String(editingShift.earnings),
+        }
+        : emptyForm
+    );
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,7 +54,14 @@ function ShiftForm({ onAdd }: ShiftFormProps) {
       <input type="number" name="hours" placeholder="Hours" value={form.hours} onChange={handleChange} />
       <input type="number" name="miles" placeholder="Miles" value={form.miles} onChange={handleChange} />
       <input type="number" name="earnings" placeholder="Earnings" value={form.earnings} onChange={handleChange} />
-      <button type="submit">Add Shift</button>
+      <button type="submit">
+        {editingShift ? "Update Shift" : "Add Shift"}
+        </button>
+        {editingShift && (
+        <button type="button" className="cancel" onClick={onCancel}>
+            Cancel
+        </button>
+        )}
     </form>
   );
 }

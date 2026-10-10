@@ -186,3 +186,18 @@ h2 {
 .amounts {
   text-align: right;
 }
+.edit {
+  background: #64748b;
+  padding: 6px 10px;
+}
+
+.edit:hover {
+  background: #475569;
+}
+.cancel {
+  background: #94a3b8;
+}
+
+.cancel:hover {
+  background: #64748b;
+}

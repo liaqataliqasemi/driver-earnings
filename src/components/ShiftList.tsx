@@ -3,9 +3,10 @@ import type { Shift } from "../types";
 interface ShiftListProps {
   shifts: Shift[];
   onDelete: (id: number) => void;
+  onEdit: (shift: Shift) => void;
 }
 
- function ShiftList({ shifts, onDelete }: ShiftListProps) {
+ function ShiftList({ shifts, onDelete, onEdit }: ShiftListProps) {
   if (shifts.length === 0) {
     return <p className="empty">No shifts yet. Add your first one!</p>;
   }
@@ -32,6 +33,7 @@ interface ShiftListProps {
                     <strong>${net.toFixed(2)}</strong>
                     <span>of ${shift.earnings.toFixed(2)}</span>
                     </div>
+                    <button className="edit" onClick={() => onEdit(shift)}>✏️</button>
                     <button className="delete" onClick={() => onDelete(shift.id)}>✕</button>
                 </div>
                 </li>

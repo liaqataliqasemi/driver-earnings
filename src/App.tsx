@@ -20,6 +20,9 @@ function App() {
   // The user's settings, loaded from Supabase
   const [settings, setSettings] = useState<Settings>({ mpg: 25, gas_price: 4.5 });
 
+  // The shift being edited (null = not editing)
+  const [editingShift, setEditingShift] = useState<Shift | null>(null);
+
   // Check login on start, and listen for sign in / sign out
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -55,14 +58,16 @@ function App() {
     loadShifts();
   }, [session]);
 
+  function calculateGasCost(miles: number) {
+    if (settings.mpg <= 0) return 0;
+    const cost = (miles / settings.mpg) * settings.gas_price;
+    return Math.round(cost * 100) / 100;
+  }
   async function addShift(newShift: Omit<Shift, "id" | "gas_cost">) {
-    const gasCost = settings.mpg > 0
-      ? (newShift.miles / settings.mpg) * settings.gas_price
-      : 0;
-
+     
     const { data, error } = await supabase
       .from("shifts")
-      .insert({ ...newShift, gas_cost: Math.round(gasCost * 100) / 100 })
+      .insert({ ...newShift, gas_cost: calculateGasCost(newShift.miles) })
       .select()
       .single();
 
@@ -71,6 +76,25 @@ function App() {
       return;
     }
     setShift([data, ...shifts]);
+  }
+
+  async function updateShift(changes: Omit<Shift, "id" | "gas_cost">) {
+    if (!editingShift) return;
+
+    const { data, error } = await supabase
+      .from("shifts")
+      .update({ ...changes, gas_cost: calculateGasCost(changes.miles) })
+      .eq("id", editingShift.id)
+      .select()
+      .single();
+
+    if (error) {
+      alert("Could not update: " + error.message);
+      return;
+    }
+
+    setShift(shifts.map((shift) => (shift.id === data.id ? data : shift)));
+    setEditingShift(null);
   }
 
   async function deleteShift(id: number) {
@@ -144,15 +168,20 @@ function App() {
         <h1>{appName}</h1>
         <button className="link" onClick={signOut}>Sign out</button>
       </div>
-      <p className="subtitle">Logged in as {session.user.email}</p>
+      <p className="subtitle">Logged in as {session.user.email}</p> 
       <SettingsForm
         key={`${settings.mpg}-${settings.gas_price}`}
         settings={settings}
         onSave={saveSettings}
       />
-      <ShiftForm onAdd={addShift} />
+      <ShiftForm
+        key={editingShift?.id ?? "new"}
+        onAdd={editingShift ? updateShift : addShift}
+        editingShift={editingShift}
+        onCancel={() => setEditingShift(null)}
+      />
       <Summary shifts={shifts} />
-      <ShiftList shifts={shifts} onDelete={deleteShift} />
+      <ShiftList shifts={shifts} onDelete={deleteShift} onEdit={setEditingShift} />
     </div>
   );
 }
