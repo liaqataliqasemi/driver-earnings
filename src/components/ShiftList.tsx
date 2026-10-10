@@ -14,20 +14,29 @@ interface ShiftListProps {
     <div className="card">
       <h2>My Shifts</h2>
       <ul className="shift-list">
-        {shifts.map((shift) => (
-          <li key={shift.id}>
-            <div>
-              <strong>{shift.date}</strong>
-              <span>
-                {shift.hours} hrs · {shift.miles} mi · ${(shift.earnings / shift.hours).toFixed(2)}/hr
-              </span>
-            </div>
-            <div className="right">
-              <strong>${shift.earnings.toFixed(2)}</strong>
-              <button className="delete" onClick={() => onDelete(shift.id)}>✕</button>
-            </div>
-          </li>
-        ))}
+        {shifts.map((shift) => {
+            const net = shift.earnings - shift.gas_cost;
+            const netPerHour = shift.hours > 0 ? net / shift.hours : 0;
+
+            return (
+                <li key={shift.id}>
+                <div>
+                    <strong>{shift.date}</strong>
+                    <span>
+                    {shift.hours} hrs · {shift.miles} mi · gas ${shift.gas_cost.toFixed(2)}
+                    </span>
+                    <span className="net">Net ${netPerHour.toFixed(2)}/hr</span>
+                </div>
+                <div className="right">
+                    <div className="amounts">
+                    <strong>${net.toFixed(2)}</strong>
+                    <span>of ${shift.earnings.toFixed(2)}</span>
+                    </div>
+                    <button className="delete" onClick={() => onDelete(shift.id)}>✕</button>
+                </div>
+                </li>
+            );
+            })}
       </ul>
     </div>
   );

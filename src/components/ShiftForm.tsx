@@ -2,7 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import type { Shift } from "../types";
 
 interface ShiftFormProps {
-  onAdd: (shift: Omit<Shift, "id">) => void;
+  onAdd: (shift: Omit<Shift, "id" | "gas_cost">) => void;
 }
 
 const emptyForm = {

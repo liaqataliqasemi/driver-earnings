@@ -4,4 +4,10 @@ export interface Shift {
   hours: number;
   miles: number;
   earnings: number;
+  gas_cost: number;
+}
+
+export interface Settings {
+  mpg: number;
+  gas_price: number;
 }
