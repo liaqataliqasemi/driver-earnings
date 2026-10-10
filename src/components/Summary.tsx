@@ -11,7 +11,6 @@ function Summary({ shifts }: SummaryProps) {
   const totalMiles = shifts.reduce((sum, shift) => sum + shift.miles, 0);
 
   const perHour = totalHours > 0 ? totalEarnings / totalHours : 0;
-  const perMile = totalMiles > 0 ? totalEarnings / totalMiles : 0;
 
   const totalGas = shifts.reduce((sum, shift) => sum + shift.gas_cost, 0);
   const netProfit = totalEarnings - totalGas;
