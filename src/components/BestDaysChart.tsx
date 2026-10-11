@@ -38,28 +38,35 @@ function BestDaysChart({ shifts }: BestDaysChartProps) {
 
   // 3. Find the best day
   const best = Math.max(...data.map((d) => d.perHour));
+  const bestDay = data.find((d) => d.perHour === best && best > 0);
 
   return (
-    <div className="card chart">
-      <h2>Best Days to Drive (net $/hr)</h2>
-      <ResponsiveContainer width="100%" height={250}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="day" />
-          <YAxis />
-          <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}/hr`} />
-          <Bar dataKey="perHour" radius={[6, 6, 0, 0]}>
-            {data.map((d) => (
-              <Cell
-                key={d.day}
-                fill={d.perHour === best && best > 0 ? "#16a34a" : "#94a3b8"}
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
+  <section className="mb-6 rounded-2xl bg-white p-4">
+    <h2 className="text-lg font-extrabold">Best days to drive</h2>
+    <p className="mb-3 text-sm text-gravel">
+      {bestDay
+        ? `${bestDay.day} pays best: $${bestDay.perHour.toFixed(2)}/hr net`
+        : "Log a few shifts to see your best days."}
+    </p>
+    <ResponsiveContainer width="100%" height={220}>
+      <BarChart data={data} margin={{ left: -16 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4E6E3" />
+        <XAxis dataKey="day" tick={{ fill: "#6B7178", fontSize: 12 }}
+          axisLine={false} tickLine={false} />
+        <YAxis tick={{ fill: "#6B7178", fontSize: 12 }} axisLine={false}
+          tickLine={false} tickFormatter={(v) => `$${v}`} />
+        <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}/hr`}
+          cursor={{ fill: "#F3F4F2" }} />
+        <Bar dataKey="perHour" radius={[6, 6, 0, 0]}>
+          {data.map((d) => (
+            <Cell key={d.day}
+              fill={d.perHour === best && best > 0 ? "#F2B705" : "#C9CDC9"} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  </section>
+);
 }
 
 export default BestDaysChart;

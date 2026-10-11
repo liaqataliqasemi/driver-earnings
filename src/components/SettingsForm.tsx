@@ -1,5 +1,8 @@
 import { useState, type FormEvent } from "react";
+import { Fuel } from "lucide-react";
 import type { Settings } from "../types";
+import { money } from "../format";
+import { inputClass, labelClass } from "../ui";
 
 interface SettingsFormProps {
   settings: Settings;
@@ -12,32 +15,50 @@ function SettingsForm({ settings, onSave }: SettingsFormProps) {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
-
     const mpgNumber = parseFloat(mpg);
     const priceNumber = parseFloat(gasPrice);
 
     if (!mpgNumber || mpgNumber <= 0 || !priceNumber || priceNumber <= 0) {
-      alert("Please enter a valid MPG and gas price");
+      alert("Enter an MPG and gas price above 0.");
       return;
     }
-
     onSave({ mpg: mpgNumber, gas_price: priceNumber });
   }
 
   return (
-    <form className="card settings" onSubmit={handleSubmit}>
-      <label>
-        Car MPG
-        <input type="number" step="0.1" value={mpg}
-          onChange={(e) => setMpg(e.target.value)} />
-      </label>
-      <label>
-        Gas price ($/gal)
-        <input type="number" step="0.01" value={gasPrice}
-          onChange={(e) => setGasPrice(e.target.value)} />
-      </label>
-      <button type="submit">Save settings</button>
-    </form>
+    <details className="mt-6 rounded-2xl bg-white">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 [&::-webkit-details-marker]:hidden">
+        <span className="flex items-center gap-2 font-semibold">
+          <Fuel size={18} className="text-sign" />
+          Gas: {settings.mpg} MPG, {money.format(settings.gas_price)}/gal
+        </span>
+        <span className="text-sm font-semibold text-sign">Change</span>
+      </summary>
+
+      <form onSubmit={handleSubmit} className="space-y-4 border-t border-black/10 p-4">
+        <div className="grid grid-cols-2 gap-3">
+          <label className={labelClass}>
+            Car MPG
+            <input type="number" inputMode="decimal" step="0.1" min="0"
+              value={mpg} onChange={(e) => setMpg(e.target.value)}
+              className={inputClass} />
+          </label>
+          <label className={labelClass}>
+            Gas $/gal
+            <input type="number" inputMode="decimal" step="0.01" min="0"
+              value={gasPrice} onChange={(e) => setGasPrice(e.target.value)}
+              className={inputClass} />
+          </label>
+        </div>
+        <button type="submit"
+          className="w-full rounded-xl border-2 border-sign py-3 font-bold text-sign hover:bg-sign hover:text-white">
+          Save gas settings
+        </button>
+        <p className="text-xs text-gravel">
+          Applies to new shifts. Past shifts keep their gas cost.
+        </p>
+      </form>
+    </details>
   );
 }
 

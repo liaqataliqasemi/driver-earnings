@@ -1,4 +1,7 @@
 import type { Shift } from "../types";
+import { Pencil, Trash2 } from "lucide-react";
+import { money, formatDate } from "../format";
+
 
 interface ShiftListProps {
   shifts: Shift[];
@@ -8,39 +11,66 @@ interface ShiftListProps {
 
  function ShiftList({ shifts, onDelete, onEdit }: ShiftListProps) {
   if (shifts.length === 0) {
-    return <p className="empty">No shifts yet. Add your first one!</p>;
+    return (
+      <div className="rounded-2xl bg-white p-6 text-center">
+        <p className="font-semibold">No shifts yet</p>
+        <p className="mt-1 text-sm text-gravel">Tap + to log your first shift.</p>
+      </div>
+    );
+  }
+
+  function handleDelete(shift: Shift) {
+    if (window.confirm(`Delete the shift on ${formatDate(shift.date)}?`)) {
+      onDelete(shift.id);
+    }
   }
 
   return (
-    <div className="card">
-      <h2>My Shifts</h2>
-      <ul className="shift-list">
+    <section>
+      <h2 className="mb-3 text-xl font-extrabold">Shifts</h2>
+      <ul className="divide-y divide-black/10 rounded-2xl bg-white">
         {shifts.map((shift) => {
-            const net = shift.earnings - shift.gas_cost;
-            const netPerHour = shift.hours > 0 ? net / shift.hours : 0;
+          const net = shift.earnings - shift.gas_cost;
+          const netPerHour = shift.hours > 0 ? net / shift.hours : 0;
 
-            return (
-                <li key={shift.id}>
-                <div>
-                    <strong>{shift.date}</strong>
-                    <span>
-                    {shift.hours} hrs · {shift.miles} mi · gas ${shift.gas_cost.toFixed(2)}
-                    </span>
-                    <span className="net">Net ${netPerHour.toFixed(2)}/hr</span>
-                </div>
-                <div className="right">
-                    <div className="amounts">
-                    <strong>${net.toFixed(2)}</strong>
-                    <span>of ${shift.earnings.toFixed(2)}</span>
-                    </div>
-                    <button className="edit" onClick={() => onEdit(shift)}>✏️</button>
-                    <button className="delete" onClick={() => onDelete(shift.id)}>✕</button>
-                </div>
-                </li>
-            );
-            })}
+          return (
+            <li key={shift.id} className="flex items-center gap-3 px-4 py-3">
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold">{formatDate(shift.date)}</p>
+                <p className="text-sm text-gravel">
+                  {shift.hours} hrs, {shift.miles} mi, gas {money.format(shift.gas_cost)}
+                </p>
+                <p className="text-sm font-semibold text-sign">
+                  {money.format(netPerHour)}/hr net
+                </p>
+              </div>
+
+              <div className="text-right">
+                <p className="text-lg font-bold">{money.format(net)}</p>
+                <p className="text-xs text-gravel">of {money.format(shift.earnings)}</p>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <button
+                  aria-label={`Edit shift on ${formatDate(shift.date)}`}
+                  onClick={() => onEdit(shift)}
+                  className="rounded-lg p-2 text-gravel hover:bg-concrete hover:text-asphalt"
+                >
+                  <Pencil size={18} />
+                </button>
+                <button
+                  aria-label={`Delete shift on ${formatDate(shift.date)}`}
+                  onClick={() => handleDelete(shift)}
+                  className="rounded-lg p-2 text-gravel hover:bg-red-50 hover:text-brake"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </li>
+          );
+        })}
       </ul>
-    </div>
+    </section>
   );
 }
 

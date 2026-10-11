@@ -33,19 +33,22 @@ function EarningsChart({ shifts }: EarningsChartProps) {
     }));
 
   return (
-    <div className="card chart">
-      <h2>Net Earnings by Day</h2>
-      <ResponsiveContainer width="100%" height={250}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`} />
-          <Bar dataKey="net" fill="#16a34a" radius={[6, 6, 0, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
+  <section className="mb-6 rounded-2xl bg-white p-4">
+    <h2 className="mb-3 text-lg font-extrabold">Net by day</h2>
+    <ResponsiveContainer width="100%" height={220}>
+      <BarChart data={data} margin={{ left: -16 }}>
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E4E6E3" />
+        <XAxis dataKey="date" tick={{ fill: "#6B7178", fontSize: 12 }}
+          axisLine={false} tickLine={false} />
+        <YAxis tick={{ fill: "#6B7178", fontSize: 12 }} axisLine={false}
+          tickLine={false} tickFormatter={(v) => `$${v}`} />
+        <Tooltip formatter={(value) => `$${Number(value).toFixed(2)}`}
+          cursor={{ fill: "#F3F4F2" }} />
+        <Bar dataKey="net" fill="#00704A" radius={[6, 6, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  </section>
+);
 }
 
 export default EarningsChart;

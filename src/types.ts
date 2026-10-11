@@ -11,3 +11,4 @@ export interface Settings {
   mpg: number;
   gas_price: number;
 }
+export type Tab = "home" | "shifts" | "add" | "charts" | "settings";

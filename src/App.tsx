@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Session } from "@supabase/supabase-js";
-import type { Shift, Settings } from "./types"; 
+import type { Shift, Settings, Tab } from "./types"; 
 import { supabase } from "./supabaseClient";
 import Auth from "./components/Auth";
 import Summary from "./components/Summary";
@@ -9,7 +9,7 @@ import ShiftForm from "./components/ShiftForm";
 import SettingsForm from "./components/SettingsForm";
 import EarningsChart from "./components/EarningsChart";
 import BestDaysChart from "./components/BestDaysChart";
-
+import BottomNav from "./components/BottomNav";
 
 function App() {
   const appName: string = "Driver Earnings Tracker";
@@ -25,7 +25,8 @@ function App() {
 
   // The shift being edited (null = not editing)
   const [editingShift, setEditingShift] = useState<Shift | null>(null);
-
+  
+  const [tab, setTab] = useState<Tab>("home");
   // Check login on start, and listen for sign in / sign out
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -60,6 +61,16 @@ function App() {
 
     loadShifts();
   }, [session]);
+
+  function startEdit(shift: Shift) {
+    setEditingShift(shift);
+    setTab("add");
+  }
+
+  function cancelEdit() {
+    setEditingShift(null);
+    setTab("shifts");
+  }
 
   function calculateGasCost(miles: number) {
     if (settings.mpg <= 0) return 0;
@@ -154,41 +165,71 @@ function App() {
   }, [session]);
 
   // Not logged in: show the login form
-  if (!session) {
-    return (
-      <div className="container">
-        <h1>{appName}</h1>
-        <p className="subtitle">Track my shifts and see my real pay.</p>
+   if (!session) {
+  return (
+      <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-4 py-10">
+        <div className="mb-8 rounded-2xl bg-sign p-1.5 shadow-md">
+          <div className="rounded-xl border-2 border-white px-5 py-6 text-white">
+            <h1 className="text-3xl font-extrabold leading-tight">Driver Earnings</h1>
+            <p className="mt-2 opacity-90">See what you really make per hour, after gas.</p>
+          </div>
+        </div>
         <Auth />
-      </div>
+      </main>
     );
   }
 
   // Logged in: show the app
   return (
-    <div className="container">
-      <div className="header">
-        <h1>{appName}</h1>
-        <button className="link" onClick={signOut}>Sign out</button>
-      </div>
-      <p className="subtitle">Logged in as {session.user.email}</p> 
-      <SettingsForm
-        key={`${settings.mpg}-${settings.gas_price}`}
-        settings={settings}
-        onSave={saveSettings}
-      />
-      <ShiftForm
-        key={editingShift?.id ?? "new"}
-        onAdd={editingShift ? updateShift : addShift}
-        editingShift={editingShift}
-        onCancel={() => setEditingShift(null)}
-      />
-      <Summary shifts={shifts} />
-      <EarningsChart shifts={shifts} />
-      <BestDaysChart shifts={shifts} />
-      <ShiftList shifts={shifts} onDelete={deleteShift} onEdit={setEditingShift} />
-    </div>
-  );
+  <>
+    <main className="mx-auto max-w-md px-4 pb-28 pt-6">
+      <h1 className="mb-6 text-2xl font-extrabold text-sign">{appName}</h1>
+
+      {tab === "home" && <Summary shifts={shifts} />}
+
+      {tab === "shifts" && (
+        <ShiftList shifts={shifts} onDelete={deleteShift} onEdit={startEdit} />
+      )}
+
+      
+      {tab === "add" && (
+        <>
+          <ShiftForm
+            key={editingShift?.id ?? "new"}
+            onAdd={editingShift ? updateShift : addShift}
+            editingShift={editingShift}
+            onCancel={cancelEdit}
+          />
+          <SettingsForm
+            key={`${settings.mpg}-${settings.gas_price}`}
+            settings={settings}
+            onSave={saveSettings}
+          />
+        </>
+      )}
+
+      {tab === "charts" && (
+        <>
+          <BestDaysChart shifts={shifts} />
+          <EarningsChart shifts={shifts} />
+        </>
+      )}
+
+      {tab === "settings" && (
+        <section className="rounded-2xl bg-white p-4">
+          <h2 className="text-lg font-extrabold">Account</h2>
+          <p className="mt-1 text-sm text-gravel">Signed in as {session.user.email}</p>
+          <button onClick={signOut}
+            className="mt-4 w-full rounded-xl border-2 border-brake py-3 font-bold text-brake hover:bg-brake hover:text-white">
+            Sign out
+          </button>
+        </section>
+      )}
+    </main>
+
+    <BottomNav active={tab} onChange={setTab} />
+  </>
+);
 }
 
 export default App;

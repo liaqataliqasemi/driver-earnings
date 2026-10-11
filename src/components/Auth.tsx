@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { supabase } from "../supabaseClient";
+import { inputClass, labelClass } from "../ui";
 
 function Auth() {
   const [email, setEmail] = useState("");
@@ -7,6 +8,7 @@ function Auth() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -18,35 +20,56 @@ function Auth() {
       : await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
+      setIsError(true);
       setMessage(
-        isSignUp
-            ? error.message
-            : "Wrong email or password. New here? Click Sign up below."
-        );
+        isSignUp ? error.message : "Wrong email or password. New here? Create an account below."
+      );
     } else {
-      setMessage(isSignUp ? "Account created!" : "Logged in!");
+      setIsError(false);
+      setMessage(isSignUp ? "Account created." : "");
     }
     setLoading(false);
   }
 
   return (
-    <div className="card auth">
-      <h2>{isSignUp ? "Create account" : "Sign in"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email}
-          onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password (6+ characters)" value={password}
-          onChange={(e) => setPassword(e.target.value)} required minLength={6} />
-        <button type="submit" disabled={loading}>
-          {loading ? "Please wait..." : isSignUp ? "Sign up" : "Sign in"}
+    <section className="rounded-2xl bg-white p-5">
+      <h2 className="mb-4 text-xl font-extrabold">
+        {isSignUp ? "Create your account" : "Sign in"}
+      </h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label className={labelClass}>
+          Email
+          <input type="email" autoComplete="email" required
+            value={email} onChange={(e) => setEmail(e.target.value)}
+            className={inputClass} />
+        </label>
+        <label className={labelClass}>
+          Password
+          <input type="password" required minLength={6}
+            autoComplete={isSignUp ? "new-password" : "current-password"}
+            value={password} onChange={(e) => setPassword(e.target.value)}
+            className={inputClass} />
+        </label>
+
+        {message && (
+          <p role="alert" className={`text-sm font-semibold ${isError ? "text-brake" : "text-sign"}`}>
+            {message}
+          </p>
+        )}
+
+        <button type="submit" disabled={loading}
+          className="w-full rounded-xl bg-sign py-4 text-lg font-bold text-white hover:bg-sign-dark disabled:opacity-60">
+          {loading ? "Please wait..." : isSignUp ? "Create account" : "Sign in"}
         </button>
       </form>
-      {message && <p className="message">{message}</p>}
-      <button className="link" onClick={() => setIsSignUp(!isSignUp)}>
-        {isSignUp ? "Already have an account? Sign in" : "No account? Sign up"}
+
+      <button type="button" onClick={() => { setIsSignUp(!isSignUp); setMessage(""); }}
+        className="mt-4 w-full text-sm font-semibold text-sign">
+        {isSignUp ? "Already have an account? Sign in" : "New here? Create an account"}
       </button>
-    </div>
-  );
+    </section>
+);
 }
 
 export default Auth;
